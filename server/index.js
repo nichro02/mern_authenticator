@@ -6,6 +6,10 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 
+//hook up mongoose
+const mongoose = require('mongoose')
+mongoose.connect('mongodb://localhost:27017')
+
 //json middleware
 app.use(express.json())
 
