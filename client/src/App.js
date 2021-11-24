@@ -1,59 +1,23 @@
-import { useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css';
 
-function App() {
-  //useState to capture data entered into form
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+//import components
+import Login from './Pages/Login'
+import Register from './Pages/Register'
 
-  //handle user signup
-  async function registerUser(event) {
-    event.preventDefault()
-    
-    const response = await fetch('http://localhost:1337/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    })
-    const data = await response.json()
-    console.log(data)
-  }
-
-  return (
+const App = () => {
+  return(
     <div>
-      <h1>Register</h1>
-      <form onSubmit={registerUser}>
-        <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          type='text'
-          placeholder='Name'
-        />
-        <input
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          type='email'
-          placeholder='Email'
-        />
-        <input
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          type='password'
-          placeholder='Password'
-        />
-        <input
-          type='submit' value='Sign Up'
-        />
-      </form>
+      <BrowserRouter>
+        <Routes>
+
+        
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Routes>
+      </BrowserRouter>
     </div>
-  );
+  )
 }
 
 export default App;
