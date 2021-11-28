@@ -50,7 +50,7 @@ app.post('/api/login', async (req, res) => {
         })
 
         if(user){
-            console.log(user.email)
+            /*console.log(user.email)*/
             const token = jwt.sign({
                 email: user.email
             }, 'secret123')
@@ -58,7 +58,7 @@ app.post('/api/login', async (req, res) => {
         }
         
     } catch (error) {
-        console.log(user.email)
+        //console.log(user.email)
         res.json({ status: 'error', error: 'Error logging user in. Verify name and password or sign up as a new user'})
     }
 })
