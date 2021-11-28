@@ -5,6 +5,9 @@ const app = express()
 //import models
 const User = require('./models/user.model')
 
+//set up jwt
+const jwt = require('jsonwebtoken')
+
 //set up cors
 const cors = require('cors')
 app.use(cors())
@@ -41,12 +44,21 @@ app.post('/api/register', async (req, res) => {
 //POST route for logging in existing user
 app.post('/api/login', async (req, res) => {
     try {
-        await User.findOne({
+        const user = await User.findOne({
             email: req.body.email,
             password: req.body.password
         })
-        res.json({ status: 'ok'})
+
+        if(user){
+            console.log(user.email)
+            const token = jwt.sign({
+                email: user.email
+            }, 'secret123')
+            res.json({ status: 'ok', user: token})
+        }
+        
     } catch (error) {
+        console.log(user.email)
         res.json({ status: 'error', error: 'Error logging user in. Verify name and password or sign up as a new user'})
     }
 })
