@@ -63,6 +63,35 @@ app.post('/api/login', async (req, res) => {
     }
 })
 
+//get token from login
+app.get('/api/quote', async(req, res) => {
+    const token = req.headers['x-access-token']
+    try {
+        const decoded = jwt.verify(token, 'secret123')
+        const email = decoded.email
+        const user = await User.findOne({email: email})
+        return { status: 'ok', quote: user.quote}
+    } catch(error){
+        console.log(error)
+        res.json({status: 'error', error: 'invalid token'})
+    }
+    
+})
+
+app.post('/api/quote', async(req, res) => {
+    const token = req.headers['x-access-token']
+    try {
+        const decoded = jwt.verify(token, 'secret123')
+        const email = decoded.email
+        await User.updateOne({email: email}, {$set: {quote: req.body.quote}})
+        return { status: 'ok'}
+    } catch(error){
+        console.log(error)
+        res.json({status: 'error', error: 'invalid token'})
+    }
+    
+})
+
 app.listen(1337, () => {
     console.log('Listening on port 1337')
 })
