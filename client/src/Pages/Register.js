@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../App.css';
 
 function Register() {
@@ -6,6 +7,8 @@ function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const history = useNavigate()
 
   //handle user signup
   async function registerUser(event) {
@@ -24,6 +27,10 @@ function Register() {
     })
     const data = await response.json()
     console.log(data)
+
+    if(data.status==='ok'){
+        history('/login')
+    }
   }
 
   return (
