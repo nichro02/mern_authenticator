@@ -24,6 +24,7 @@ function Login() {
       console.log(data)
       if(data.user){
         console.log('Login successful')
+        localStorage.setItem('token', data.user)
         window.location.href = '/dashboard'
       } else {
         alert('Please check your username and password')
