@@ -15,7 +15,7 @@ const Dashboard = () => {
                 'x-acess-token': localStorage.getItem('token'),
             },
         })
-        const data = req.json()
+        const data = await req.json()
         console.log(data)
         if(data.status === 'ok'){
             setQuote(data.quote)
@@ -50,11 +50,12 @@ const Dashboard = () => {
                 quote: tempQuote
             })
         })
-        const data = req.json()
-        console.log('STATUS',data.status)
+        const data = await req.json()
+        
         if(data.status === 'ok'){
+            setQuote(tempQuote)
             setTempQuote('')
-            setQuote(data.quote)
+            console.log('DATA',data)
         } else {
             setQuote('There was an issue with your quote')
         }
@@ -70,7 +71,7 @@ const Dashboard = () => {
                     type='text'
                     placeholder='Quote'
                     value={tempQuote}
-                    setValue={e => setTempQuote(e.target.value)}
+                    onChange={e => setTempQuote(e.target.value)}
                 />
                 <input 
                     type = 'submit'

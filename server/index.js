@@ -92,7 +92,7 @@ app.get('/api/quote', async(req, res) => {
 })
 
 app.post('/api/quote', async(req, res) => {
-    const token = req.headers['x-access-token']
+    const token = req.headers['x-acess-token']
     try {
         const decoded = jwt.verify(token, 'secret123')
         const email = decoded.email
