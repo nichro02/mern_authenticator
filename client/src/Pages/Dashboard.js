@@ -39,7 +39,7 @@ const Dashboard = () => {
     }, [])
     
     async function updateQuote(event) {
-        event.preventDefault()
+        //event.preventDefault()
         const req = await fetch('http://localhost:1337/api/quote', {
             method: 'POST',
             headers: {
