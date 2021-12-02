@@ -1,10 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import jwt from 'jsonwebtoken'
 import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
     //get token from local storage to determine if user is authenticated
     const history = useNavigate()
+
+    const [quote, setQuote] = useState('')
+    const [tempQuote, setTempQuote] = useState('')
+
     async function populateQuote() {
         const req = await fetch('http://localhost:1337/api/quote', {
             headers: {
@@ -13,6 +17,11 @@ const Dashboard = () => {
         })
         const data = req.json()
         console.log(data)
+        if(data.status === 'ok'){
+            setQuote(data.quote)
+        } else {
+            setQuote('There was an issue with your quote')
+        }
     }
 
     useEffect(() => {
@@ -29,10 +38,47 @@ const Dashboard = () => {
         }
     }, [])
     
+    async function updateQuote(event) {
+        event.preventDefault()
+        const req = await fetch('http://localhost:1337/api/quote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-acess-token': localStorage.getItem('token'),
+            },
+            body: JSON.stringify({
+                quote: tempQuote
+            })
+        })
+        const data = req.json()
+        console.log(data)
+        if(data.status === 'ok'){
+            setTempQuote('')
+            setQuote(data.quote)
+        } else {
+            setQuote('There was an issue with your quote')
+        }
+    }
+
     return(
-        <h1>
-            Hello world
-        </h1>
+        <div>
+            <h1>
+            Your quote: {quote || 'No quote found'}
+            </h1>
+            <form onSubmit={updateQuote}>
+                <input
+                    type='text'
+                    placeholder='Quote'
+                    value={tempQuote}
+                    setValue={e => setTempQuote(e.target.value)}
+                />
+                <input 
+                    type = 'submit'
+                    value = 'Update Quote'
+                />
+            </form>
+        </div>
+        
     )
 }
 

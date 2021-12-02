@@ -8,6 +8,8 @@ const User = require('./models/user.model')
 //set up jwt
 const jwt = require('jsonwebtoken')
 
+const bcrypt=require('bcrypt')
+
 //set up cors
 const cors = require('cors')
 app.use(cors())
@@ -28,10 +30,11 @@ app.get('/hello', (req, res) => {
 app.post('/api/register', async (req, res) => {
     console.log(req.body)
     try {
+        const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password,
+            password: newPassword,
         })
         res.json({status: 'ok'})
     } catch(error) {
@@ -43,34 +46,44 @@ app.post('/api/register', async (req, res) => {
 
 //POST route for logging in existing user
 app.post('/api/login', async (req, res) => {
-    try {
-        const user = await User.findOne({
-            email: req.body.email,
-            password: req.body.password
-        })
+	const user = await User.findOne({
+		email: req.body.email,
+	})
 
-        if(user){
-            /*console.log(user.email)*/
-            const token = jwt.sign({
-                email: user.email
-            }, 'secret123')
-            res.json({ status: 'ok', user: token})
-        }
-        
-    } catch (error) {
-        //console.log(user.email)
-        res.json({ status: 'error', error: 'Error logging user in. Verify name and password or sign up as a new user'})
-    }
+	if (!user) {
+		return { status: 'error', error: 'Invalid login' }
+	}
+
+	const isPasswordValid = await bcrypt.compare(
+		req.body.password,
+		user.password
+	)
+
+	if (isPasswordValid) {
+		const token = jwt.sign(
+			{
+				name: user.name,
+				email: user.email,
+			},
+			'secret123'
+		)
+
+		return res.json({ status: 'ok', user: token })
+	} else {
+		return res.json({ status: 'error', user: false })
+	}
 })
 
 //get token from login
 app.get('/api/quote', async(req, res) => {
     const token = req.headers['x-access-token']
+    console.log('--------->',token)
     try {
         const decoded = jwt.verify(token, 'secret123')
+        
         const email = decoded.email
         const user = await User.findOne({email: email})
-        return { status: 'ok', quote: user.quote}
+        return res.json({ status: 'ok', quote: user.quote})
     } catch(error){
         console.log(error)
         res.json({status: 'error', error: 'invalid token'})
