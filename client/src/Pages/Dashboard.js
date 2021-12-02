@@ -51,7 +51,7 @@ const Dashboard = () => {
             })
         })
         const data = req.json()
-        console.log(data)
+        console.log('STATUS',data.status)
         if(data.status === 'ok'){
             setTempQuote('')
             setQuote(data.quote)

@@ -76,8 +76,8 @@ app.post('/api/login', async (req, res) => {
 
 //get token from login
 app.get('/api/quote', async(req, res) => {
-    const token = req.headers['x-access-token']
-    console.log('--------->',token)
+    const token = req.headers['x-acess-token']
+    console.log('HEADERS',req.headers)
     try {
         const decoded = jwt.verify(token, 'secret123')
         
