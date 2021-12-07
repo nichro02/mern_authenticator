@@ -50,15 +50,16 @@ app.post('/api/login', async (req, res) => {
 		email: req.body.email,
 	})
 
+    //check to see if user exists in database
 	if (!user) {
 		return { status: 'error', error: 'Invalid login' }
 	}
-
+    //compare entered password with password in db
 	const isPasswordValid = await bcrypt.compare(
 		req.body.password,
 		user.password
 	)
-
+    //sign jwt if password is valid
 	if (isPasswordValid) {
 		const token = jwt.sign(
 			{
@@ -90,7 +91,7 @@ app.get('/api/quote', async(req, res) => {
     }
     
 })
-
+//update quote
 app.post('/api/quote', async(req, res) => {
     const token = req.headers['x-acess-token']
     try {

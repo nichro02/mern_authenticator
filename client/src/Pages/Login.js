@@ -9,7 +9,7 @@ function Login() {
     //handle user login
     async function loginUser(event) {
       event.preventDefault()
-      
+      //send data to database
       const response = await fetch('http://localhost:1337/api/login', {
         method: 'POST',
         headers: {
